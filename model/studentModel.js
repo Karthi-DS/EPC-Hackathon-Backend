@@ -49,4 +49,3 @@ const Student = sequelize.define(
 );
 
 module.exports = Student;
-
