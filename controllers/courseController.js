@@ -1,162 +1,123 @@
-const Student = require("../model/studentModel");
-const { signJwt } = require("../middleware/auth"); 
+const Course = require("../model/courseModel");
 
-exports.createStudent = async (req, res) => {
+exports.createCourse = async (req, res) => {
   try {
-    const student = await Student.create(req.body);
+    const course = await Course.create(req.body);
 
     return res.status(201).json({
       success: true,
-      message: "Student created successfully",
+      message: "Course created successfully",
       data: {
-        student_id: student.student_id,
-        name: student.name,
-        email: student.email,
-        department: student.department,
+        course_id: course.course_id,
+        course_name: course.course_name,
+        course_code: course.course_code,
+        credits: course.credits,
       },
     });
   } catch (error) {
-    console.error("Create student error:", error);
+    console.error("Create course error:", error);
     return res.status(500).json({
       success: false,
-      message: "Unable to create student",
+      message: "Unable to create course",
     });
   }
 };
 
-exports.loginStudent = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const student = await Student.findOne({
-      where: { email },
-    });
-
-    if (!student) {
-      return res.status(400).json({ message: "Student not found" });
-    }
-
-    if (password !== student.password) {
-      return res.status(400).json({ message: "Invalid password" });
-    }
-
-    const token = signJwt({
-      id: student.student_id,
-      email: student.email,
-      name: student.name,
-    });
-
-    res.cookie("token", token);
-
-    return res.json({
-      success: true,
-      token,
-    });
-  } catch (error) {
-    console.error("Login error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Login failed",
-    });
-  }
-};
-
-exports.getStudent = async (req, res) => {
+exports.getCourse = async (req, res) => {
   try {
     const id = req.body.id;
-    const student = await Student.findByPk(id, {
-      attributes: { exclude: ["password"] },
-    });
 
-    if (!student) {
+    const course = await Course.findByPk(id);
+
+    if (!course) {
       return res.status(404).json({
         success: false,
-        message: "Student not found",
+        message: "Course not found",
       });
     }
 
     return res.status(200).json({
       success: true,
-      data: student,
+      data: course,
     });
   } catch (error) {
-    console.error("Get student error:", error);
+    console.error("Get course error:", error);
     return res.status(500).json({
       success: false,
-      message: "Unable to fetch student",
+      message: "Unable to fetch course",
     });
   }
 };
 
-exports.getAllStudents = async (req, res) => {
+exports.getAllCourses = async (req, res) => {
   try {
-    const students = await Student.findAll({
-      attributes: { exclude: ["password"] },
-    });
+    const courses = await Course.findAll();
 
     return res.status(200).json({
       success: true,
-      count: students.length,
-      data: students,
+      count: courses.length,
+      data: courses,
     });
   } catch (error) {
-    console.error("Get all students error:", error);
+    console.error("Get all courses error:", error);
     return res.status(500).json({
       success: false,
-      message: "Unable to fetch students",
+      message: "Unable to fetch courses",
     });
   }
 };
 
-exports.updateStudent = async (req, res) => {
+exports.updateCourse = async (req, res) => {
   try {
     const id = req.body.id;
-    const student = await Student.findByPk(id);
 
-    if (!student) {
+    const course = await Course.findByPk(id);
+
+    if (!course) {
       return res.status(404).json({
         success: false,
-        message: "Student not found",
+        message: "Course not found",
       });
     }
 
-    await student.update(req.body);
+    await course.update(req.body);
 
     return res.status(200).json({
       success: true,
-      message: "Student updated successfully",
+      message: "Course updated successfully",
     });
   } catch (error) {
-    console.error("Update student error:", error);
+    console.error("Update course error:", error);
     return res.status(500).json({
       success: false,
-      message: "Unable to update student",
+      message: "Unable to update course",
     });
   }
 };
 
-exports.deleteStudent = async (req, res) => {
-  try {
-    const student = await Student.findByPk(req.params.id);
 
-    if (!student) {
+exports.deleteCourse = async (req, res) => {
+  try {
+    const course = await Course.findByPk(req.params.id);
+
+    if (!course) {
       return res.status(404).json({
         success: false,
-        message: "Student not found",
+        message: "Course not found",
       });
     }
 
-    await student.destroy();
+    await course.destroy();
 
     return res.status(200).json({
       success: true,
-      message: "Student deleted successfully",
+      message: "Course deleted successfully",
     });
   } catch (error) {
-    console.error("Delete student error:", error);
+    console.error("Delete course error:", error);
     return res.status(500).json({
       success: false,
-      message: "Unable to delete student",
+      message: "Unable to delete course",
     });
   }
 };
