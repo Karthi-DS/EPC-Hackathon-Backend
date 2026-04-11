@@ -5,8 +5,8 @@ const app = express();
 app.use(express.json());
 
 const services = {
-  student: "https://backend-1-sl3y.onrender.com",
-  course: "https://backend-2-ugop.onrender.com",
+  course: "https://backend-1-sl3y.onrender.com",
+  student: "https://backend-2-ugop.onrender.com",
   enrollment: "https://backend-3-h5fx.onrender.com",
 };
 
