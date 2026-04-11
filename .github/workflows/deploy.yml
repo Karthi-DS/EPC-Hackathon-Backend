@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+      - Course-main
+      - Enrollment-main
+      - Student-main
 
 jobs:
   deploy:
