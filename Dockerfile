@@ -17,4 +17,4 @@ COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
 
 # Start both services
-CMD ["sh", "-c", "node app.js --port=5000 & node app.js --port=5001 & nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "node app.js --port=5000 & nginx -g 'daemon off;'"]
