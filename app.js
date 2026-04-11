@@ -3,16 +3,17 @@ require("dotenv").config();
 const express = require("express");
 const { db, testDB } = require("./config/db");
 
+const studentRoutes = require("./routes/studentRoutes");
+
 testDB();
 
 const server = express();
 
-server.get("/api/",(req,res)=>{
-  res.send("test service is running");
-})
+server.get("/api/",studentRoutes);
+
 
 server.get("/api/student/healthCheck", (req, res) => {
-  res.send("service is good..");
+  res.send("student service is good..");
 });
 
 server.listen(process.env.PORT,()=>{

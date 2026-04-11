@@ -2,7 +2,7 @@
 const { DataTypes } = require("sequelize");
 const { db } = require("../config/db");
 
-const Student = sequelize.define(
+const Student = db.define(
   "students",
   {
     student_id: {
@@ -20,6 +20,11 @@ const Student = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+    },
+
+    password:{
+      type: DataTypes.STRING,
+      allowNull: false
     },
 
     department: {
