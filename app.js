@@ -8,7 +8,7 @@ testDB();
 const server = express();
 
 server.get("/api/",(req,res)=>{
-  res.send("testing service is running");
+  res.send("test service is running");
 })
 
 server.get("/api/courses/healthCheck", (req, res) => {
