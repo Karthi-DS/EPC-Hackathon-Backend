@@ -7,25 +7,39 @@ app.use(express.json());
 const services = {
   student: "https://backend-1-sl3y.onrender.com",
   course: "https://backend-2-ugop.onrender.com",
-  enrollment: "https://backend-3-h5fx.onrender.com"
+  enrollment: "https://backend-3-h5fx.onrender.com",
 };
 
 app.use("/api", (req, res, next) => {
-  const apiType = req.body.api || req.query.api;
+  const apiRaw = req.body?.api || req.query?.api;
 
-  if (!apiType || !services[apiType]) {
+  console.log(apiRaw);
+
+  if (!apiRaw) {
+    return res.status(400).json({ error: "API type required" });
+  }
+
+  const cleanedApi = apiRaw.trim().replace(/^\/+|\/+$/g, "");
+
+  const fullPath = cleanedApi;
+  const apiType = cleanedApi.split("/")[0];
+
+  console.log("apiType:", apiType);
+
+  if (!services[apiType]) {
     return res.status(400).json({ error: "Invalid API type" });
   }
 
   const target = services[apiType];
 
+  const finalUrl = `${target}/api/${fullPath}`;
+  console.log("➡️ Forwarding to:", finalUrl);
+
   return createProxyMiddleware({
     target,
     changeOrigin: true,
 
-    pathRewrite: (path, req) => {
-      return `/${apiType}`; 
-    },
+    pathRewrite: () => `/api/${fullPath}`,
 
     onProxyReq: (proxyReq, req, res) => {
       if (req.body && req.body.api) {
@@ -36,8 +50,7 @@ app.use("/api", (req, res, next) => {
         proxyReq.setHeader("Content-Length", Buffer.byteLength(bodyData));
         proxyReq.write(bodyData);
       }
-    }
-
+    },
   })(req, res, next);
 });
 
