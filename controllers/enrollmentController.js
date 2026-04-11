@@ -1,162 +1,74 @@
-const Student = require("../model/studentModel");
-const { signJwt } = require("../middleware/auth"); 
+const Enrollment = require("../model/enrollmentModel");
+const axios = require("axios");
 
-exports.createStudent = async (req, res) => {
+// Service URLs
+const STUDENT_SERVICE_URL = "http://localhost:3001/student";
+const COURSE_SERVICE_URL = "http://localhost:3002/course";
+
+// ENROLL STUDENT
+exports.enrollStudent = async (req, res) => {
   try {
-    const student = await Student.create(req.body);
+    const { student_id, course_id } = req.body;
+
+    // Validate student (using POST so body works)
+    const studentResponse = await axios.post(STUDENT_SERVICE_URL, {
+      id: student_id,
+    });
+
+    if (!studentResponse.data.success) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid student",
+      });
+    }
+
+    // Validate course
+    const courseResponse = await axios.post(COURSE_SERVICE_URL, {
+      id: course_id,
+    });
+
+    if (!courseResponse.data.success) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid course",
+      });
+    }
+
+    // Create enrollment
+    const enrollment = await Enrollment.create({
+      student_id,
+      course_id,
+    });
 
     return res.status(201).json({
       success: true,
-      message: "Student created successfully",
-      data: {
-        student_id: student.student_id,
-        name: student.name,
-        email: student.email,
-        department: student.department,
-      },
+      message: "Student enrolled successfully",
+      data: enrollment,
     });
   } catch (error) {
-    console.error("Create student error:", error);
+    console.error("Enrollment error:", error.message);
     return res.status(500).json({
       success: false,
-      message: "Unable to create student",
+      message: "Unable to enroll student",
     });
   }
 };
 
-exports.loginStudent = async (req, res) => {
+// GET ALL ENROLLMENTS
+exports.getAllEnrollments = async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    const student = await Student.findOne({
-      where: { email },
-    });
-
-    if (!student) {
-      return res.status(400).json({ message: "Student not found" });
-    }
-
-    if (password !== student.password) {
-      return res.status(400).json({ message: "Invalid password" });
-    }
-
-    const token = signJwt({
-      id: student.student_id,
-      email: student.email,
-      name: student.name,
-    });
-
-    res.cookie("token", token);
-
-    return res.json({
-      success: true,
-      token,
-    });
-  } catch (error) {
-    console.error("Login error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Login failed",
-    });
-  }
-};
-
-exports.getStudent = async (req, res) => {
-  try {
-    const id = req.body.id;
-    const student = await Student.findByPk(id, {
-      attributes: { exclude: ["password"] },
-    });
-
-    if (!student) {
-      return res.status(404).json({
-        success: false,
-        message: "Student not found",
-      });
-    }
+    const enrollments = await Enrollment.findAll();
 
     return res.status(200).json({
       success: true,
-      data: student,
+      count: enrollments.length,
+      data: enrollments,
     });
   } catch (error) {
-    console.error("Get student error:", error);
+    console.error("Fetch enrollments error:", error);
     return res.status(500).json({
       success: false,
-      message: "Unable to fetch student",
-    });
-  }
-};
-
-exports.getAllStudents = async (req, res) => {
-  try {
-    const students = await Student.findAll({
-      attributes: { exclude: ["password"] },
-    });
-
-    return res.status(200).json({
-      success: true,
-      count: students.length,
-      data: students,
-    });
-  } catch (error) {
-    console.error("Get all students error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Unable to fetch students",
-    });
-  }
-};
-
-exports.updateStudent = async (req, res) => {
-  try {
-    const id = req.body.id;
-    const student = await Student.findByPk(id);
-
-    if (!student) {
-      return res.status(404).json({
-        success: false,
-        message: "Student not found",
-      });
-    }
-
-    await student.update(req.body);
-
-    return res.status(200).json({
-      success: true,
-      message: "Student updated successfully",
-    });
-  } catch (error) {
-    console.error("Update student error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Unable to update student",
-    });
-  }
-};
-
-exports.deleteStudent = async (req, res) => {
-  try {
-    const student = await Student.findByPk(req.params.id);
-
-    if (!student) {
-      return res.status(404).json({
-        success: false,
-        message: "Student not found",
-      });
-    }
-
-    await student.destroy();
-
-    return res.status(200).json({
-      success: true,
-      message: "Student deleted successfully",
-    });
-  } catch (error) {
-    console.error("Delete student error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Unable to delete student",
+      message: "Unable to fetch enrollments",
     });
   }
 };
