@@ -8,11 +8,11 @@ testDB();
 const server = express();
 
 server.get("/api/",(req,res)=>{
-  res.send("service is running")
+  res.send("testing service is running");
 })
 
 server.get("/api/courses/healthCheck", (req, res) => {
-  res.json({ status: "OK" });
+  res.send("service is good..");
 });
 
 server.listen(process.env.PORT,()=>{
