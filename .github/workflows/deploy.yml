@@ -15,9 +15,9 @@ jobs:
 
       - name: Trigger Render Deploy
         run: |
-          if [ -z "${{ secrets.RENDER_ENROLLMENT_DEPLOY_HOOK }}" ]; then
+          if [ -z "${{ secrets.RENDER_STUDENT_DEPLOY_HOOK }}" ]; then
             echo "Missing Render deploy hook secret: RENDER_DEPLOY_HOOK"
             exit 1
           fi
-          curl -X POST -H "Accept: application/json" "${{ secrets.RENDER_ENROLLMENT_DEPLOY_HOOK }}"
+          curl -X POST -H "Accept: application/json" "${{ secrets.RENDER_STUDENT_DEPLOY_HOOK }}"
         shell: bash
