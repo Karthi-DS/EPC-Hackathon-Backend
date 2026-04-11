@@ -89,6 +89,7 @@ exports.getStudent = async (req, res) => {
 };
 
 exports.getAllStudents = async (req, res) => {
+  console.log("hitting...");
   try {
     const students = await Student.findAll({
       attributes: { exclude: ["password"] },

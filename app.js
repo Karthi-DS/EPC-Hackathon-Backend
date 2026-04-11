@@ -9,10 +9,10 @@ testDB();
 
 const server = express();
 
-server.get("/api",studentRoutes);
+server.use("/api",studentRoutes);
 
 
-server.get("/api/student/healthCheck", (req, res) => {
+server.get("/api/healthCheckUp", (req, res) => {
   res.send("student service is good..");
 });
 
