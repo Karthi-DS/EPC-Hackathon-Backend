@@ -12,7 +12,7 @@ const server = express();
 server.use("/api",studentRoutes);
 
 
-server.get("/api/healthCheckUp", (req, res) => {
+server.get("/api/student/healthCheckUp", (req, res) => {
   res.send("student service is good..");
 });
 
