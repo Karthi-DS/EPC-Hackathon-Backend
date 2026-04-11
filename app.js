@@ -7,6 +7,9 @@ testDB();
 
 const server = express();
 
+server.get("/api/",(req,res)=>{
+  res.send("service is running")
+})
 
 server.get("/api/courses/healthCheck", (req, res) => {
   res.json({ status: "OK" });
