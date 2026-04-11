@@ -28,4 +28,4 @@ async function testDB() {
   }
 }
 
-module.exports = {db, testDB};
+module.exports = {db, testDB}; 
