@@ -69,7 +69,7 @@ exports.getAllCourses = async (req, res) => {
 
 exports.updateCourse = async (req, res) => {
   try {
-    const id = req.body.id;
+    const id = req.params.id;
 
     const course = await Course.findByPk(id);
 
