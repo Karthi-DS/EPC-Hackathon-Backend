@@ -12,11 +12,6 @@ const server = express();
 
 server.use(express.json());
 
-// Root route
-// server.get("/", (req, res) => {
-//   res.send("Course Service running 🚀");
-// });
-
 server.use("/api", courseRoutes);
 
 server.get("/api/courses/healthCheck", (req, res) => {

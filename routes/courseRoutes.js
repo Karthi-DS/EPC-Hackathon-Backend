@@ -16,10 +16,10 @@ router.post("/course", createCourse);
 router.get("/course/all", getAllCourses);
 
 
-router.get("/course", getCourse);
+router.get("/course/:id", getCourse);
 
 
-router.put("/course", updateCourse);
+router.put("/course/:id", updateCourse);
 
 
 router.delete("/course", deleteCourse);

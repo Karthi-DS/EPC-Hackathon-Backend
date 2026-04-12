@@ -25,7 +25,7 @@ exports.createCourse = async (req, res) => {
 
 exports.getCourse = async (req, res) => {
   try {
-    const id = req.body.id;
+    const id = req.params.id;
 
     const course = await Course.findByPk(id);
 
