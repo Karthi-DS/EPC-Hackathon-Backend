@@ -1,15 +1,19 @@
 const express = require("express");
 const {
   enrollStudent,
-  getAllEnrollments
+  getAllEnrollments,
+  unEnrollStudent,
+  getStudentEnrollments
 } = require("../controllers/enrollmentController");
 
 const router = express.Router();
 
-// ENROLL STUDENT
 router.post("/enrollment", enrollStudent);
 
-// GET ALL ENROLLMENTS
-router.get("/enrollment/all", getAllEnrollments);
+router.get("/enrollment", getAllEnrollments);
+
+router.get("/enrollment/:id",getStudentEnrollments);
+
+router.delete("/enrollment/:id",unEnrollStudent);
 
 module.exports = router;

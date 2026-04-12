@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
-const { sequelize } = require("../config/db");
+const { db } = require("../config/db");
 
-const Enrollment = sequelize.define(
+const Enrollment = db.define(
   "enrollments",
   {
     enrollment_id: {

@@ -1,40 +1,30 @@
 const Enrollment = require("../model/enrollmentModel");
-const axios = require("axios");
 
-// Service URLs
-const STUDENT_SERVICE_URL = "http://localhost:3001/student";
-const COURSE_SERVICE_URL = "http://localhost:3002/course";
+const STUDENT_SERVICE_URL = process.env.STUDENT_SERVICE_URL;
+const COURSE_SERVICE_URL = process.env.COURSE_SERVICE_URL;
 
-// ENROLL STUDENT
 exports.enrollStudent = async (req, res) => {
   try {
     const { student_id, course_id } = req.body;
 
-    // Validate student (using POST so body works)
-    const studentResponse = await axios.post(STUDENT_SERVICE_URL, {
-      id: student_id,
-    });
-
-    if (!studentResponse.data.success) {
+    const studentResponse = await fetch(STUDENT_SERVICE_URL+"/api/student/"+student_id);
+    console.log(studentResponse);
+    if (!studentResponse.ok) {
       return res.status(400).json({
         success: false,
         message: "Invalid student",
       });
     }
 
-    // Validate course
-    const courseResponse = await axios.post(COURSE_SERVICE_URL, {
-      id: course_id,
-    });
+    const courseResponse = await fetch(COURSE_SERVICE_URL+"/api/course/"+course_id);
 
-    if (!courseResponse.data.success) {
+    if (!courseResponse.ok) {
       return res.status(400).json({
         success: false,
         message: "Invalid course",
       });
     }
 
-    // Create enrollment
     const enrollment = await Enrollment.create({
       student_id,
       course_id,
@@ -54,7 +44,6 @@ exports.enrollStudent = async (req, res) => {
   }
 };
 
-// GET ALL ENROLLMENTS
 exports.getAllEnrollments = async (req, res) => {
   try {
     const enrollments = await Enrollment.findAll();
@@ -69,6 +58,53 @@ exports.getAllEnrollments = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Unable to fetch enrollments",
+    });
+  }
+};
+
+exports.getStudentEnrollments = async (req, res) =>{
+  try {
+    const enrollments = await Enrollment.findAll({student_id:req.params.id});
+
+    return res.status(200).json({
+      success: true,
+      student_id:req.params.id,
+      data: enrollments,
+    });
+  } catch (error) {
+    console.error("Fetch enrollments error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch enrollments",
+    });
+  }
+}
+
+exports.unEnrollStudent = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const enrollment = await Enrollment.findByPk(id);
+
+    if (!enrollment) {
+      return res.status(404).json({
+        success: false,
+        message: "Enrollment not found",
+      });
+    }
+
+    await enrollment.destroy();
+
+    return res.status(200).json({
+      success: true,
+      message: "Unenrolled successfully",
+    });
+
+  } catch (error) {
+    console.error("Unenroll error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to unenroll",
     });
   }
 };
