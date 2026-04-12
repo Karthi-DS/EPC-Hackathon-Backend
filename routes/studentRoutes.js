@@ -18,9 +18,9 @@ router.get("/student", getAllStudents);
 
 router.get("/student/:id", getStudent);
 
-router.put("/student", updateStudent);
+router.put("/student/:id", updateStudent);
 
-router.delete("/student", deleteStudent);
+router.delete("/student/:id", deleteStudent);
 
 
 module.exports = router;

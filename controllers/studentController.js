@@ -3,6 +3,7 @@ const { signJwt } = require("../middleware/auth");
 
 exports.createStudent = async (req, res) => {
   try {
+    console.log(req.body);
     const student = await Student.create(req.body);
 
     return res.status(201).json({

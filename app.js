@@ -9,12 +9,20 @@ testDB();
 
 const server = express();
 
+server.use(express.json());
+
+// server.use((req, res, next) => {
+//   console.log("Incoming:", req.method, req.url);
+//   next();
+// });
+
+server.get("/api/studentRoute/healthCheckUp", (req, res) => {
+  res.send("students service is good..");
+});
+
+
 server.use("/api",studentRoutes);
 
-
-server.get("/api/student/healthCheckUp", (req, res) => {
-  res.send("student service is good..");
-});
 
 server.listen(process.env.PORT,()=>{
   console.log(`server is running ${process.env.PORT}`)
