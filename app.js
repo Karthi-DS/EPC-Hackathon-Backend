@@ -17,7 +17,7 @@ server.use(express.json());
 // });
 
 server.get("/api/studentRoute/healthCheckUp", (req, res) => {
-  res.send("students service is good..");
+  res.send("student service is good..");
 });
 
 
@@ -25,5 +25,5 @@ server.use("/api",studentRoutes);
 
 
 server.listen(process.env.PORT,()=>{
-  console.log(`server is running ${process.env.PORT}`)
+  console.log(`server is running ${process.env.PORT}`);
 })

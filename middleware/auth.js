@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 
 const signJwt = (student, expires = "7d") => {
-  console.log(student);
   return jwt.sign(
     {
       student_name: student.name,

@@ -29,9 +29,11 @@ exports.loginStudent = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+
     const student = await Student.findOne({
       where: { email },
     });
+
 
     if (!student) {
       return res.status(400).json({ message: "Student not found" });
