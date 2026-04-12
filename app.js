@@ -2,7 +2,7 @@ const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
-app.use(express.json());
+
 
 const services = {
   course: "https://backend-1-sl3y.onrender.com",
@@ -11,20 +11,17 @@ const services = {
 };
 
 app.use("/api", (req, res, next) => {
-  const apiRaw = req.body?.api || req.query?.api;
+  const path = req.originalUrl.replace(/^\/api\/?/, "");
 
-  console.log(apiRaw);
-
-  if (!apiRaw) {
-    return res.status(400).json({ error: "API type required" });
+  if (!path) {
+    return res.status(400).json({ error: "API path required" });
   }
 
-  const cleanedApi = apiRaw.trim().replace(/^\/+|\/+$/g, "");
+  const parts = path.split("/");
+  const apiType = parts[0];
 
-  const fullPath = cleanedApi;
-  const apiType = cleanedApi.split("/")[0];
-
-  console.log("apiType:", apiType);
+  console.log("👉 Incoming:", req.method, req.originalUrl);
+  console.log("👉 API Type:", apiType);
 
   if (!services[apiType]) {
     return res.status(400).json({ error: "Invalid API type" });
@@ -32,30 +29,27 @@ app.use("/api", (req, res, next) => {
 
   const target = services[apiType];
 
-  const finalUrl = `${target}/api/${fullPath}`;
-  console.log("➡️ Forwarding to:", finalUrl);
+  console.log("Forwarding to:", `${target}/api/${path}`);
 
   return createProxyMiddleware({
     target,
     changeOrigin: true,
 
-    pathRewrite: () => `/api/${fullPath}`,
+    pathRewrite: () => `/api/${path}`,
 
     onProxyReq: (proxyReq, req, res) => {
-      if (req.body && req.body.api) {
-        delete req.body.api;
+      console.log("🚀 Proxying:", req.method, `/api/${path}`);
+    },
 
-        const bodyData = JSON.stringify(req.body);
-        proxyReq.setHeader("Content-Type", "application/json");
-        proxyReq.setHeader("Content-Length", Buffer.byteLength(bodyData));
-        proxyReq.write(bodyData);
-      }
+    onError: (err, req, res) => {
+      console.error("❌ Proxy Error:", err.message);
+      res.status(500).json({ error: "Gateway error" });
     },
   })(req, res, next);
 });
 
 app.get("/", (req, res) => {
-  res.send("API Gateway Running");
+  res.send("API Gateway Running 🚀");
 });
 
 app.listen(5000, () => {
