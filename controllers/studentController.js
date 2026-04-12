@@ -63,7 +63,7 @@ exports.loginStudent = async (req, res) => {
 
 exports.getStudent = async (req, res) => {
   try {
-    const id = req.body.id;
+    const id = req.params.id;
     const student = await Student.findByPk(id, {
       attributes: { exclude: ["password"] },
     });
@@ -89,7 +89,6 @@ exports.getStudent = async (req, res) => {
 };
 
 exports.getAllStudents = async (req, res) => {
-  console.log("hitting...");
   try {
     const students = await Student.findAll({
       attributes: { exclude: ["password"] },
@@ -111,7 +110,7 @@ exports.getAllStudents = async (req, res) => {
 
 exports.updateStudent = async (req, res) => {
   try {
-    const id = req.body.id;
+    const id = req.params.id;
     const student = await Student.findByPk(id);
 
     if (!student) {

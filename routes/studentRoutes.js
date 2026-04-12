@@ -14,9 +14,9 @@ router.post("/student", createStudent);
 
 router.post("/student/login", loginStudent);
 
-router.get("/student/all", getAllStudents);
+router.get("/student", getAllStudents);
 
-router.get("/student", getStudent);
+router.get("/student/:id", getStudent);
 
 router.put("/student", updateStudent);
 
