@@ -1,7 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
+const cors = require("cors");
+
 
 
 const services = {
@@ -9,6 +12,11 @@ const services = {
   student: "https://backend-2-ugop.onrender.com",
   enrollment: "https://backend-3-h5fx.onrender.com",
 };
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL, 
+  credentials: true
+}));
 
 app.use("/api", (req, res, next) => {
   const path = req.originalUrl.replace(/^\/api\/?/, "");
