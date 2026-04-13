@@ -53,7 +53,11 @@ exports.loginStudent = async (req, res) => {
 
     return res.json({
       success: true,
-      token,
+      student:{
+      id: student.student_id,
+      email: student.email,
+      name: student.name,
+    }
     });
   } catch (error) {
     console.error("Login error:", error);
