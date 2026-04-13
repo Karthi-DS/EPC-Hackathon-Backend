@@ -128,11 +128,12 @@ exports.updateStudent = async (req, res) => {
       });
     }
 
-    await student.update(req.body);
+    const updatedStudent = await student.update(req.body);
 
     return res.status(200).json({
       success: true,
       message: "Student updated successfully",
+      student:updatedStudent
     });
   } catch (error) {
     console.error("Update student error:", error);
